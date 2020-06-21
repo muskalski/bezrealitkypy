@@ -37,7 +37,8 @@ while True:
     email_content = ''
     for district in districts:
         url = f'https://www.bezrealitky.cz/vypis/nabidka-pronajem/byt/praha/praha-{district}/1-1,2-kk,2-1?priceFrom={price_from}&priceTo={price_to}&equipped%5B0%5D=castecne&equipped%5B1%5D=vybaveny'
-        logging.info(url)
+        district = district.capitalize()
+        logging.info(f'Scraping {district}...')
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
         flats = soup.find_all('article', 'product product--apartment has-ctas')
@@ -70,12 +71,12 @@ while True:
                 update_sql = '''UPDATE flats
                              SET is_new = ?, layout = ?, size = ?, price = ?, status = ?, district = ?, updated = ?
                              WHERE id = ?'''
-                update_parameters = (is_new, layout, size, total_price, status, district.capitalize(), datetime_now, flat_id)
+                update_parameters = (is_new, layout, size, total_price, status, district, datetime_now, flat_id)
                 c.execute(update_sql, update_parameters)
 
             else:
                 description_pl = translate(translator, description)
-                insert_parameters = (flat_id, is_new, layout, size, description, total_price, status, district.capitalize(), datetime_now, 1, description_pl)
+                insert_parameters = (flat_id, is_new, layout, size, description, total_price, status, district, datetime_now, 1, description_pl)
                 insert_sql = 'INSERT INTO flats (id, is_new, layout, size, description, price, status, district, added, notification_sent, description_pl) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
                 link = f'https://www.bezrealitky.cz/nemovitosti-byty-domy/{flat_id}'
                 email_parameters = f'Dzielnica: {district}\nNowe ogłoszenie: {is_new}\nTyp: {layout}\nMetraz: {size}\nCena: {total_price}\nStatus: {status}\nOpis: {description_pl}'
