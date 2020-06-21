@@ -13,7 +13,7 @@ from email_sender import send_email
 from translate import translate
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s %(message)s',
     handlers=[
         logging.FileHandler('bezrealitky.log'),
@@ -37,7 +37,7 @@ while True:
     email_content = ''
     for district in districts:
         url = f'https://www.bezrealitky.cz/vypis/nabidka-pronajem/byt/praha/praha-{district}/1-1,2-kk,2-1?priceFrom={price_from}&priceTo={price_to}&equipped%5B0%5D=castecne&equipped%5B1%5D=vybaveny'
-        print(url)
+        logging.info(url)
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
         flats = soup.find_all('article', 'product product--apartment has-ctas')
@@ -60,7 +60,6 @@ while True:
             select_sql = 'SELECT * FROM flats WHERE id=?'
             c.execute(select_sql, (flat_id,))
             selected_flat = c.fetchone()
-            # print(selected_flat)
             if selected_flat:
                 if selected_flat[4] != description:
                     description_pl = translate(translator, description)
@@ -81,7 +80,7 @@ while True:
                 link = f'https://www.bezrealitky.cz/nemovitosti-byty-domy/{flat_id}'
                 email_parameters = (is_new, layout, size, description_pl, total_price, status, district)
                 email_content += f'{link}\n{email_parameters}\n\n\n'
-                print(link, email_parameters)
+                logging.info(msg=(link, email_parameters))
                 c.execute(insert_sql, insert_parameters)
 
         time.sleep(randint(30, 60))
