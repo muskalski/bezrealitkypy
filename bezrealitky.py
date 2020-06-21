@@ -4,10 +4,10 @@ import sqlite3
 import time
 from datetime import datetime
 from random import randint
-from googletrans import Translator
 
 import requests
 from bs4 import BeautifulSoup
+from googletrans import Translator
 
 from email_sender import send_email
 from translate import translate
@@ -78,13 +78,13 @@ while True:
                 insert_parameters = (flat_id, is_new, layout, size, description, total_price, status, district.capitalize(), datetime_now, 1, description_pl)
                 insert_sql = 'INSERT INTO flats (id, is_new, layout, size, description, price, status, district, added, notification_sent, description_pl) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
                 link = f'https://www.bezrealitky.cz/nemovitosti-byty-domy/{flat_id}'
-                email_parameters = (is_new, layout, size, description_pl, total_price, status, district)
+                email_parameters = f'Dzielnica: {district}\nNowe ogłoszenie: {is_new}\nTyp: {layout}\nMetraz: {size}\nCena: {total_price}\nStatus: {status}\nOpis: {description_pl}'
                 email_content += f'{link}\n{email_parameters}\n\n\n'
-                logging.info(msg=(link, email_parameters))
+                logging.info(email_content)
                 c.execute(insert_sql, insert_parameters)
 
         time.sleep(randint(30, 60))
-    conn.commit()
     if email_content:
         send_email(email_content)
+    conn.commit()
 c.close()
