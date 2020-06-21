@@ -39,7 +39,13 @@ while True:
         url = f'https://www.bezrealitky.cz/vypis/nabidka-pronajem/byt/praha/praha-{district}/1-1,2-kk,2-1?priceFrom={price_from}&priceTo={price_to}&equipped%5B0%5D=castecne&equipped%5B1%5D=vybaveny'
         district = district.capitalize()
         logging.info(f'Scraping {district}...')
-        r = requests.get(url)
+        for _ in range(10):
+            try:
+                r = requests.get(url)
+                break
+            except:
+                logging.exception()
+            time.sleep(10)
         soup = BeautifulSoup(r.text, 'html.parser')
         flats = soup.find_all('article', 'product product--apartment has-ctas')
         for flat in flats:
