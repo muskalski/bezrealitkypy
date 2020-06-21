@@ -9,6 +9,8 @@ c.execute('''SELECT * FROM flats WHERE id = 480805''')
 c.execute('''SELECT * FROM flats''')
 for flat in c.fetchall():
     print(flat)
+while True:
+    pass
 
 # c.execute('''ALTER TABLE flats
 # ADD notification_sent INTEGER''')

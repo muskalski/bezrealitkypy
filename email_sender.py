@@ -16,3 +16,4 @@ def send_email(content):
     s.login('***REMOVED***', '***REMOVED***')
     s.send_message(msg)
     s.quit()
+
