@@ -13,12 +13,15 @@ def send_email(content):
     msg['From'] = '***REMOVED***'
     msg['To'] = '***REMOVED***, ***REMOVED***'
     msg.set_content(content)
+    p = '***REMOVED***'
 
     # Send the message via our own SMTP server.
     for _ in range(5):
         try:
-            s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            s.login('***REMOVED***', '***REMOVED***')
+            s = smtplib.SMTP('smtp.gmail.com', 587)
+            s.ehlo()
+            s.starttls()
+            s.login('***REMOVED***', p)
             s.send_message(msg)
             s.quit()
             return True

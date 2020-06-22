@@ -45,7 +45,7 @@ while True:
                 break
             except:
                 logging.exception()
-            time.sleep(10)
+                time.sleep(10)
         soup = BeautifulSoup(r.text, 'html.parser')
         flats = soup.find_all('article', 'product product--apartment has-ctas')
         for flat in flats:
