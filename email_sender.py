@@ -6,12 +6,14 @@ from email.message import EmailMessage
 logging = logging.getLogger(__name__)
 
 
-def send_email(content):
+def send_email(content, recipients=None):
+    if recipients is None:
+        recipients = ['***REMOVED***, ***REMOVED***']
     msg = EmailMessage()
 
     msg['Subject'] = f'[BEZREALITKYBOT] New apartments'
     msg['From'] = '***REMOVED***'
-    msg['To'] = '***REMOVED***, ***REMOVED***'
+    msg['To'] = ", ".join(recipients)
     msg.set_content(content)
     p = '***REMOVED***'
 
