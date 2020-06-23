@@ -1,31 +1,45 @@
 import logging
-import smtplib
 import time
-from email.message import EmailMessage
+
+from mailjet_rest import Client
 
 logging = logging.getLogger(__name__)
 
+api_key = '***REMOVED***'
+api_secret = '***REMOVED***'
+mailjet = Client(auth=(api_key, api_secret), version='v3.1')
 
-def send_email(content, recipients=None):
-    if recipients is None:
-        recipients = ['***REMOVED***, ***REMOVED***']
-    msg = EmailMessage()
 
-    msg['Subject'] = f'[BEZREALITKYBOT] New apartments'
-    msg['From'] = '***REMOVED***'
-    msg['To'] = ", ".join(recipients)
-    msg.set_content(content)
-    p = '***REMOVED***'
+def send_email(content):
+    data = {
+        'Messages': [
+            {
+                "From": {
+                    "Email": "***REMOVED***",
+                    "Name": "BEZREALITKYBOT"
+                },
+                "To": [
+                    {
+                        "Email": "***REMOVED***",
+                        "Name": "Piotrek"
+                    },
+                    {
+                        "Email": "***REMOVED***",
+                        "Name": "Apolonia"
+                    },
+
+                ],
+                "Subject": "[BEZREALITKYBOT] New apartments",
+                "TextPart": content,
+            }
+        ]
+    }
 
     # Send the message via our own SMTP server.
     for _ in range(5):
         try:
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.ehlo()
-            s.starttls()
-            s.login('***REMOVED***', p)
-            s.send_message(msg)
-            s.quit()
+            result = mailjet.send.create(data=data)
+            logging.info(result.status_code)
             return True
         except:
             logging.exception('Problem with sending an e-mail')

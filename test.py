@@ -1,3 +1,3 @@
 import email_sender
 
-assert email_sender.send_email('TEST', ['***REMOVED***'])
+assert email_sender.send_email('TEST')
